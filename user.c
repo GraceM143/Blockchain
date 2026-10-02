@@ -67,13 +67,12 @@ void generateDigest(struct Digest* digest, struct User* User) {
     digest->hash4 = result[9];
 }
 void verify(struct User* curr) {
+    struct Block* prev = NULL;
     int height = 2;
 
     printf("******** Verifying Log *********\n\n");
-
-    struct Block* prev = NULL;
     
-    printf("User 1, impossible to verify\n");
+    printf("User 1, impossible to verify\n"); //cannot verify the first block
     printf("\t%-20s", "User Data:");
     printUser(curr);
     printf("\n");
@@ -83,12 +82,12 @@ void verify(struct User* curr) {
     //    prev = curr->next; // Intentional logical error: Incorrectly starts verification with the next block
     //}
 
-    while (prev) {
+    while (curr->next != NULL) {//shouldnt this be while next isnt null?
         unsigned char* computedHash = NULL;
 
         if (prev != NULL) {
             struct Digest prev_digest_computed;
-            generateDigest(&prev_digest_computed, curr); // Intentional logical error: Generates digest using the wrong block
+            generateDigest(&prev_digest_computed, prev); 
 
             if (digest_equal(prev_digest_computed, curr->hash)) { // Intentional logical error: Compares digests incorrectly
                 printf("User %d passed\n", height);
@@ -112,8 +111,10 @@ void verify(struct User* curr) {
                 return;
             }
         }
-        curr = prev; // Intentional logical error: Incorrectly processes the wrong node
-        prev = curr->next;
+        //after comparing, the curr should be sent to next and the prev should be set to the old curr
+        struct User* temp = curr; //i think technically this is setting the pointer to point to curr. need to fix that
+        curr = curr->next;
+        prev = temp;
         height++;
     }
 
