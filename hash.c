@@ -11,11 +11,10 @@ unsigned char* SSHA(const unsigned char* msg, size_t length) {
         for (int round = 0; round < 8; round++) {
             unsigned char g = (B & C) | (C & D);
             unsigned char old_A = A;
-            A = A + (B >> 1); // Non-destructive bitshift replaced with addition
-            B = B ^ (D << 1); // Non-destructive bitshift replaced with XOR and left shift
-            E = (g + msg[i] + B);
-            D = A ^ B;
-            C = (A + E) & 0xFF; // Non-destructive addition replaced with bitwise AND to limit range
+            A = A >> 2; // Non-destructive bitshift replaced with addition
+            E = (g + msg[i]);
+            D = A ^ (B >> 1);
+            C = (A + E); // Non-destructive addition replaced with bitwise AND to limit range
             A = E;
             B = old_A;
         }

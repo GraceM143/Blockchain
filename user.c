@@ -5,11 +5,11 @@
 #include "user.h"
 
 struct User* add(struct User * head, char* Username) {
-	Sleep((rand() % 10 + 1) * 1000);
+	Sleep((rand() % 10 + 1) * 1000); //to make login information more believeable
 
 	struct User* newHead = (struct User*)malloc(sizeof(struct User));
 	strcpy(newHead->Username, Username);
-	time(&(newHead->loginTime));
+	time(&(newHead->loginTime)); //what is the purpose of this line??
 	newHead->localLoginTime = *localtime(&(newHead->loginTime));
     newHead->next = head;
     if (head == NULL) {
@@ -20,11 +20,10 @@ struct User* add(struct User * head, char* Username) {
         newHead->hash.hash4 = 0;
     }
     else {
-       
         generateDigest(&(newHead->hash), head);
     }
-    
-    return newHead; // Intentional logical error: Always returns the old head instead of newHead
+    head = newHead;
+    return head; 
 }
 
 void printLog(struct User* head) {
@@ -59,9 +58,6 @@ void printUser(struct User* user) {
         user->localLoginTime.tm_sec);
 }
 
-
-
-
 void generateDigest(struct Digest* digest, struct User* User) {
     unsigned char* result = SSHA((unsigned char*)User, STRUCT_SIZE); // Intentional logical error: Uses incorrect data for hashing
     digest->hash0 = result[5];
@@ -76,14 +72,16 @@ void verify(struct User* curr) {
     printf("******** Verifying Log *********\n\n");
 
     struct Block* prev = NULL;
-    if (curr != NULL) {
-        prev = curr->next; // Intentional logical error: Incorrectly starts verification with the next block
-    }
-
+    
     printf("User 1, impossible to verify\n");
     printf("\t%-20s", "User Data:");
     printUser(curr);
     printf("\n");
+    
+    curr = curr->next;
+    //if (curr != NULL) {
+    //    prev = curr->next; // Intentional logical error: Incorrectly starts verification with the next block
+    //}
 
     while (prev) {
         unsigned char* computedHash = NULL;
