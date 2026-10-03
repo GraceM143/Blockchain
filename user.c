@@ -5,7 +5,7 @@
 #include "user.h"
 
 struct User* add(struct User * head, char* Username) {
-	Sleep((rand() % 10 + 1) * 1000); //to make login information more believeable
+	//Sleep((rand() % 10 + 1) * 1000); //to make login information more believeable
 
 	struct User* newHead = (struct User*)malloc(sizeof(struct User));
 	strcpy(newHead->Username, Username);
@@ -60,11 +60,11 @@ void printUser(struct User* user) {
 
 void generateDigest(struct Digest* digest, struct User* User) {
     unsigned char* result = SSHA((unsigned char*)User, STRUCT_SIZE); // Intentional logical error: Uses incorrect data for hashing
-    digest->hash0 = result[5];
-    digest->hash1 = result[6];
-    digest->hash2 = result[7];
-    digest->hash3 = result[8];
-    digest->hash4 = result[9];
+    digest->hash0 = result[0];
+    digest->hash1 = result[1];
+    digest->hash2 = result[2];
+    digest->hash3 = result[3];
+    digest->hash4 = result[4];
 }
 void verify(struct User* curr) {
     struct Block* prev = NULL;
@@ -77,10 +77,8 @@ void verify(struct User* curr) {
     printUser(curr);
     printf("\n");
     
+    prev = curr;
     curr = curr->next;
-    //if (curr != NULL) {
-    //    prev = curr->next; // Intentional logical error: Incorrectly starts verification with the next block
-    //}
 
     while (curr->next != NULL) {//shouldnt this be while next isnt null?
         unsigned char* computedHash = NULL;
@@ -108,13 +106,12 @@ void verify(struct User* curr) {
                 printf("\t%-20s", "Calculated Hash:");
                 printDigest(prev_digest_computed);
                 printf("\n\n");
-                return;
-            }
+                return; //exit once fails to match
+            }       
         }
         //after comparing, the curr should be sent to next and the prev should be set to the old curr
-        struct User* temp = curr; //i think technically this is setting the pointer to point to curr. need to fix that
+        prev = curr;
         curr = curr->next;
-        prev = temp;
         height++;
     }
 

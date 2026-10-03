@@ -1,21 +1,26 @@
 #include "hash.h"
 
 unsigned char* SSHA(const unsigned char* msg, size_t length) {
+    //salt values
     unsigned char A = 56;
     unsigned char B = 99;
     unsigned char C = 102;
     unsigned char D = 67;
     unsigned char E = 76;
 
+    //hashing
     for (int i = 0; i < length; i++) {
         for (int round = 0; round < 8; round++) {
             unsigned char g = (B & C) | (C & D);
             unsigned char old_A = A;
-            A = A >> 2; // Non-destructive bitshift replaced with addition
-            E = (g + msg[i]);
+            unsigned char old_E = E; 
+            
+            A = A >> 2;
+            C = (A + old_E);
             D = A ^ (B >> 1);
-            C = (A + E); // Non-destructive addition replaced with bitwise AND to limit range
-            A = E;
+            E = (g + msg[i]);
+
+            A = old_E;
             B = old_A;
         }
     }
@@ -25,7 +30,7 @@ unsigned char* SSHA(const unsigned char* msg, size_t length) {
     digest[1] = B;
     digest[2] = C;
     digest[3] = D;
-    digest[4] = D;
+    digest[4] = E;
     return digest;
 }
 
