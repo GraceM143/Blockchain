@@ -67,7 +67,7 @@ void generateDigest(struct Digest* digest, struct User* User) {
     digest->hash4 = result[4];
 }
 void verify(struct User* curr) {
-    struct Block* prev = NULL;
+    struct User* prev = NULL;
     int height = 2;
 
     printf("******** Verifying Log *********\n\n");
@@ -80,21 +80,23 @@ void verify(struct User* curr) {
     prev = curr;
     curr = curr->next;
 
-    while (curr->next != NULL) {//shouldnt this be while next isnt null?
+    while (prev) {//shouldnt this be while next isnt null?
         unsigned char* computedHash = NULL;
 
         if (prev != NULL) {
-            struct Digest prev_digest_computed;
-            generateDigest(&prev_digest_computed, prev); 
+            /*struct Digest prev_digest_computed;
+            generateDigest(&prev_digest_computed, prev); */
+            struct Digest curr_hash;
+            generateDigest(&curr_hash, curr);
 
-            if (digest_equal(prev_digest_computed, curr->hash)) { // Intentional logical error: Compares digests incorrectly
+            if (digest_equal(curr_hash,prev->hash)) { // Intentional logical error: Compares digests incorrectly
                 printf("User %d passed\n", height);
                 printf("\t%-20s", "User Data:");
                 printUser(curr);
                 printf("\t%-20s", "Saved Hash:");
-                printDigest(curr->hash);
+                printDigest(prev->hash);
                 printf("\t%-20s", "Calculated Hash:");
-                printDigest(prev_digest_computed);
+                printDigest(curr_hash);
                 printf("\n\n");
             }
             else {
@@ -104,7 +106,7 @@ void verify(struct User* curr) {
                 printf("\t%-20s", "Saved Hash:");
                 printDigest(curr->hash);
                 printf("\t%-20s", "Calculated Hash:");
-                printDigest(prev_digest_computed);
+                printDigest(curr_hash);
                 printf("\n\n");
                 return; //exit once fails to match
             }       
