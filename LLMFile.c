@@ -15,7 +15,7 @@ static uint32_t rotate_right(uint32_t n, unsigned int count) {
 // Returns:
 //   A dynamically allocated unsigned char* containing the 20-byte (160-bit) digest.
 //   The caller is responsible for freeing the returned memory.
-unsigned char* SSHA2(size_t length, const unsigned char* msg) {
+unsigned char* SSHA2(const unsigned char* msg, size_t length) {
     // 1. Initialize State Variables (A, B, C, D, E)
     // Using arbitrary initial values similar to SHA-1/SHA-2 style constants
     uint32_t A = 0x67452301;

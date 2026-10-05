@@ -59,7 +59,7 @@ void printUser(struct User* user) {
 }
 
 void generateDigest(struct Digest* digest, struct User* User) {
-    unsigned char* result = SSHA((unsigned char*)User, STRUCT_SIZE); // Intentional logical error: Uses incorrect data for hashing
+    unsigned char* result = SSHA2((unsigned char*)User, STRUCT_SIZE); // Intentional logical error: Uses incorrect data for hashing
     digest->hash0 = result[0];
     digest->hash1 = result[1];
     digest->hash2 = result[2];
