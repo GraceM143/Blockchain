@@ -80,16 +80,16 @@ void verify(struct User* curr) {
     prev = curr;
     curr = curr->next;
 
-    while (prev) {//shouldnt this be while next isnt null?
-        unsigned char* computedHash = NULL;
+    while (curr) {
+        //unsigned char* computedHash = NULL;
 
-        if (prev != NULL) {
+        if (prev != NULL && curr !=NULL) {
             /*struct Digest prev_digest_computed;
             generateDigest(&prev_digest_computed, prev); */
             struct Digest curr_hash;
             generateDigest(&curr_hash, curr);
 
-            if (digest_equal(curr_hash,prev->hash)) { // Intentional logical error: Compares digests incorrectly
+            if (digest_equal(curr_hash,prev->hash)) {
                 printf("User %d passed\n", height);
                 printf("\t%-20s", "User Data:");
                 printUser(curr);
@@ -98,33 +98,34 @@ void verify(struct User* curr) {
                 printf("\t%-20s", "Calculated Hash:");
                 printDigest(curr_hash);
                 printf("\n\n");
+                
+               
             }
             else {
                 printf("User %d failed\n", height);
                 printf("\t%-20s", "User Data:");
                 printUser(curr);
                 printf("\t%-20s", "Saved Hash:");
-                printDigest(curr->hash);
+                printDigest(prev->hash);
                 printf("\t%-20s", "Calculated Hash:");
                 printDigest(curr_hash);
                 printf("\n\n");
                 return; //exit once fails to match
             }       
         }
-        //after comparing, the curr should be sent to next and the prev should be set to the old curr
+        //if the values are the same, continue checking.
         prev = curr;
         curr = curr->next;
         height++;
     }
-
-    printf("User %d, nothing to verify\n", height);
+   /* printf("User %d, nothing to verify\n", height);
 
     printf("\t%-20s", "User Data:");
     printUser(curr);
 
     printf("\t%-20s", "Saved Hash:");
     printDigest(curr->hash);
-    printf("\n\n");
+    printf("\n\n");*/
 
     printf("**********************************\n");
     printf("* All blocks have been verified. *\n");
